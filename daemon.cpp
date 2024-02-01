@@ -73,7 +73,13 @@ void Daemon::detectProcess()
     }
     bool isExist = checkProcessByName(targetExePath.split("/").last());  // 查询该进程
     if (!isExist)
-        QProcess::startDetached(targetExePath);
+    {
+        if (!QProcess::startDetached(targetExePath))
+        {
+            this->m_systemTray->showMessage(QString("错误"), QString("未能成功运行「WeaselServer.exe」"), QSystemTrayIcon::Critical);
+            QApplication::quit();
+        }
+    }
     m_timer->start();
 }
 
